@@ -2221,7 +2221,7 @@ impl DigBossRuntimeService {
             .map_err(|error| DigBossRuntimeError::Infrastructure(error.to_string()))?
             .ok_or(BossServiceError::MissingTunnel)?;
         let progress = parse_boss_progress(snapshot.boss_progress_json.as_deref())
-            .map_err(DigBossRuntimeError::Infrastructure)?;
+            .map_err(|error| DigBossRuntimeError::Infrastructure(format!("Failed to parse boss progress: {error}")))?;
         let progress_entry = progress
             .get(&boundary.to_string())
             .and_then(|value| match value {
@@ -4033,7 +4033,7 @@ impl DigBossRuntimeService {
             .map_err(|error| DigBossRuntimeError::Infrastructure(error.to_string()))?
             .ok_or(BossServiceError::MissingTunnel)?;
         let progress = parse_boss_progress(snapshot.boss_progress_json.as_deref())
-            .map_err(DigBossRuntimeError::Infrastructure)?;
+            .map_err(|error| DigBossRuntimeError::Infrastructure(format!("Failed to parse boss progress: {error}")))?;
         at_boss_boundary(
             narrow_i32(snapshot.depth, "tunnel depth")
                 .map_err(DigBossRuntimeError::Infrastructure)?,
